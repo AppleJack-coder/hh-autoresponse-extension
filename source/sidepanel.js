@@ -10,12 +10,12 @@ function get_current_counter() {
     // Get current counter
     forwardRequest({method: 'counter', get: true}).then((response) => {
         if (response.success) {
-            document.getElementById('applied-amount').value = "Applied:" + String(response.amount);
+            document.getElementById('applied-amount').textContent = "Applied:" + String(response.counter);
         }
     })
 }
-function get_current_settings() {
-    // Get current state
+
+function get_current_state() {
     var startButton = document.getElementById('startButton');
     var stopButton = document.getElementById('stopButton');
     forwardRequest({method: 'state', get: true}).then((response) => {
@@ -30,6 +30,10 @@ function get_current_settings() {
             }
         }
     })
+}
+function get_current_settings() {
+    // Get current state
+    get_current_state();
 
     // Get settings
     forwardRequest({method: 'settings', get: true}).then((response) => {
@@ -44,15 +48,13 @@ function get_current_settings() {
 }
 
 function getLogs() {
-    // Get current counter
-    get_current_counter();
-    
     // Get current logs
     var logs_textarea = document.getElementById('logs');
     forwardRequest({method: 'get_logs'}).then((response) => {
         if (response.success) {
             console.log(response.logs)
             logs_textarea.textContent=response.logs;
+            logs_textarea.scrollTop = logs_textarea.scrollHeight;
         }
     })
 }
@@ -62,12 +64,14 @@ function startScript() {
     let letter_template = document.getElementById('letter-textarea').value;
     let amount = parseInt(document.getElementById('amount').value);
     forwardRequest({method: 'settings', set: true, data: {letter: letter_template, amount: amount}}).then(() => {
-        // Changing state
-        forwardRequest({method: 'state', set: true, state: 1}).then((response) => {
-            if (response.success) {
-                document.getElementById('startButton').disabled = true;
-                document.getElementById('stopButton').disabled = false;
-            }
+        forwardRequest({method: 'counter', reset: true}).then(() => {
+            // Changing state
+            forwardRequest({method: 'state', set: true, state: 1}).then((response) => {
+                if (response.success) {
+                    document.getElementById('startButton').disabled = true;
+                    document.getElementById('stopButton').disabled = false;
+                }
+            })
         })
     })
 }
@@ -90,5 +94,12 @@ resetLogsButton.addEventListener('click', ()=>{forwardRequest({method: 'reset_lo
 get_current_settings();
 
 setInterval(() => {
+    // Get current counter
+    get_current_counter();
+    
+    // Get logs
     getLogs();
+
+    // Get current state
+    get_current_state();
 }, 2000);

@@ -59,8 +59,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse({success: true, logs: current_logs});
     })
   } else if (request.method == "counter") {
-    // TODO: stop script if counter > amount in settings
-    // add next page
+    // TODO: add next page
     // Reset, get or add to counter
     if (request.reset == true) {
       chrome.storage.local.set({counter: 0}).then(
@@ -75,9 +74,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       chrome.storage.local.get({counter: 0}).then((response) => {
         var current_counter = response.counter;
         current_counter+=1;
-        chrome.storage.local.set({counter: current_counter}).then(
-          sendResponse({success: true, counter: current_counter})
-        );
+        chrome.storage.local.get({settings: {letter: "", amount: 200}}).then((response) => {
+          if (current_counter >= response.settings.amount) {
+            chrome.storage.local.set({state: 0}).then(
+              chrome.storage.local.set({counter: current_counter}).then(
+                sendResponse({success: true, counter: current_counter})
+              )
+            );
+          } else {
+            chrome.storage.local.set({counter: current_counter}).then(
+              sendResponse({success: true, counter: current_counter})
+            )
+          }
+        })
       })
       
     }

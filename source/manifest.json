@@ -28,7 +28,9 @@
           "apply_content_script.js"
         ],
         "matches": [
-          "https://*.hh.ru/vacancy/*"
+          "https://*.hh.ru/vacancy/*",
+          "https://*.hh.ru/applicant/vacancy_response*",
+          "https://*.hh.ru/applicant/negotiations"
         ]
       }
     ],
