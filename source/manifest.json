@@ -17,7 +17,7 @@
     "content_scripts": [
       {
         "js": [
-          "content_script.js"
+          "search_content_script.js"
         ],
         "matches": [
           "https://*.hh.ru/search/vacancy*"
@@ -25,7 +25,7 @@
       },
       {
         "js": [
-          "content_script.js"
+          "apply_content_script.js"
         ],
         "matches": [
           "https://*.hh.ru/vacancy/*"

@@ -43,7 +43,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // Add log entry
     chrome.storage.local.get({logs: ""}).then((response) => {
       var current_logs = response.logs;
-      current_logs+=current_time+' '+request.data+'\n';
+      if (request.data == "" && request.split) {
+        current_logs+='-----------------------------\n';
+      } else {
+        current_logs+=current_time+' '+request.data+'\n';
+      }
       chrome.storage.local.set({logs: current_logs}).then(
         sendResponse({success: true, logs: current_logs})
       );

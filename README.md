@@ -16,5 +16,5 @@ Google Chrome extension for sending applications for multiple vacancies on hh we
 - [x] 4. Add "Start" and "Stop" buttons to side panel
 - [] 5. Add commands
 - [x] 6. Add functions to itterate through vacancies and hide them once they where checked
-- [] 7. Send to every vacancy letter from settings
+- [x] 7. Send to every vacancy letter from settings
 - [] 8. Avoid stucking on popups and additional confirmations
