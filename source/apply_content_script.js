@@ -15,6 +15,11 @@ function timeout(ms) {
 setTimeout(async () => {
     var response = await forwardRequest({method: "state", get: true});
     if (response.state == 2) {
+        var relocation_warning = document.querySelectorAll("[data-qa='relocation-warning-confirm']");
+        if (relocation_warning.length != 0) {
+            relocation_warning[0].click();
+            await timeout(5000);
+        }
         // Click if there is a button for applying letter
         var letter_btn_list = document.querySelectorAll("[data-qa='vacancy-response-letter-toggle']");
         var apply_btn = document.querySelectorAll("[data-qa='vacancy-response-submit-popup']");
