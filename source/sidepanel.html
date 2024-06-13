@@ -1,13 +1,31 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" href="sidepanel.css">
     <title>hh.ru script</title>
   </head>
   <body>
-    <button id="startButton" type="button">Start</button>
-    <button id="stopButton" type="button" disabled>Stop</button>
-    <textarea name="logs" id="logs" rows="50" cols="20"></textarea>
-    <button id="resetLogsButton" type="button">Clear Logs</button>
+    <section class="settings">
+      <h1>Settings</h1>
+      <div class="letter-settings">
+        <h3>Letter template</h3>
+        <textarea name="letter" id="letter-textarea"></textarea>
+      </div>
+      <div class="applications-amount">
+        <h3>Target application amount</h3>
+        <input type="text" name="amount" id="amount">
+      </div>
+    </section>
+    <section class="controls">
+      <button id="startButton" type="button" class="controls-btn">Start</button>
+      <button id="stopButton" type="button" disabled class="controls-btn">Stop</button>
+      <button id="resetLogsButton" type="button" class="controls-btn">Clear Logs</button>
+    </section>
+    <section class="logs">
+      <h1>Logs</h1>
+      <p id="applied-amount">Applied: 0</p>
+      <textarea name="logs" id="logs"></textarea>
+    </section>
   </body>
   <script src="./sidepanel.js"></script>
 </html>

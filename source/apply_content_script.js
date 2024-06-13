@@ -26,7 +26,7 @@ setTimeout(async () => {
 
             letter_btn.click();
             await timeout(2000);
-            document.querySelectorAll("[data-qa='vacancy-response-letter-informer']")[0].getElementsByTagName('textarea')[0].value = 'Добрый день';//letter_txt;
+            document.querySelectorAll("[data-qa='vacancy-response-letter-informer']")[0].getElementsByTagName('textarea')[0].value = letter_txt;
             await timeout(2000);
 
             // Send letter and check if there is confirmation

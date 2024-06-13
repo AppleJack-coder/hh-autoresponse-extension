@@ -6,7 +6,14 @@ function forwardRequest(message) {
       })
     })
 }
-
+function get_current_counter() {
+    // Get current counter
+    forwardRequest({method: 'counter', get: true}).then((response) => {
+        if (response.success) {
+            document.getElementById('applied-amount').value = "Applied:" + String(response.amount);
+        }
+    })
+}
 function get_current_settings() {
     // Get current state
     var startButton = document.getElementById('startButton');
@@ -25,12 +32,21 @@ function get_current_settings() {
     })
 
     // Get settings
+    forwardRequest({method: 'settings', get: true}).then((response) => {
+        if (response.success) {
+            document.getElementById('letter-textarea').value = response.settings.letter;
+            document.getElementById('amount').value = response.settings.amount;
+        }
+    })
 
     // Get current counter
-
+    get_current_counter();
 }
 
 function getLogs() {
+    // Get current counter
+    get_current_counter();
+    
     // Get current logs
     var logs_textarea = document.getElementById('logs');
     forwardRequest({method: 'get_logs'}).then((response) => {
@@ -42,11 +58,17 @@ function getLogs() {
 }
 
 function startScript() {
-    forwardRequest({method: 'state', set: true, state: 1}).then((response) => {
-        if (response.success) {
-            document.getElementById('startButton').disabled = true;
-            document.getElementById('stopButton').disabled = false;
-        }
+    // Applying new settings
+    let letter_template = document.getElementById('letter-textarea').value;
+    let amount = parseInt(document.getElementById('amount').value);
+    forwardRequest({method: 'settings', set: true, data: {letter: letter_template, amount: amount}}).then(() => {
+        // Changing state
+        forwardRequest({method: 'state', set: true, state: 1}).then((response) => {
+            if (response.success) {
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('stopButton').disabled = false;
+            }
+        })
     })
 }
 function stopScript() {

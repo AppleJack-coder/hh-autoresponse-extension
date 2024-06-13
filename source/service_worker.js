@@ -60,6 +60,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     })
   } else if (request.method == "counter") {
     // TODO: stop script if counter > amount in settings
+    // add next page
     // Reset, get or add to counter
     if (request.reset == true) {
       chrome.storage.local.set({counter: 0}).then(
