@@ -59,6 +59,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse({success: true, logs: current_logs});
     })
   } else if (request.method == "counter") {
+    // TODO: stop script if counter > amount in settings
     // Reset, get or add to counter
     if (request.reset == true) {
       chrome.storage.local.set({counter: 0}).then(

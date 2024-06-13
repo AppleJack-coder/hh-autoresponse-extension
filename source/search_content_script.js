@@ -59,7 +59,7 @@ async function send_application() {
 
         // Get block title and response url
         var target_title = target.getElementsByClassName('serp-item__title-link')[0].textContent;
-        await forwardRequest({method: "add_log", data: `Located vacancy ${target_title}`});
+        await forwardRequest({method: "add_log", data: `Located vacancy "${target_title}"`});
         var target_response_url = target.getElementsByClassName('bloko-button_kind-primary')[0].href;
 
         // Go to response url
