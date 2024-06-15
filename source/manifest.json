@@ -4,6 +4,12 @@
     "version": "1.0",
     "description": "Automatically sends applications for multiple vacancies on hh.ru website",
 
+    "icons": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    },
 
     "background": {
       "service_worker": "service_worker.js"
