@@ -1,6 +1,9 @@
 # hh autoresponse extension
 Google Chrome extension for sending applications for multiple vacancies on hh website
 
+# Description
+The hh (HeadHunter) website allows their users to apply for up to 200 vacancies per day. This extension tries to automate this process to save your time.
+
 # Install
 1. Turn on developer mode in google chrome extension tab
 2. Unpack extension and "Install unpacked"
