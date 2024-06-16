@@ -45,7 +45,7 @@ function hide_vacancy(target) {
 }
 
 async function send_application() {
-    let response = await forwardRequest({method: "counter", get: true});
+    let response = await forwardRequest({method: "counter", get: true, type: 'page'});
 
     if (response.success) {
         var counter = response.counter;
@@ -53,6 +53,31 @@ async function send_application() {
 
         // Get target vacancy
         var vacancies = document.getElementsByClassName('serp-item_link');
+        /* If counter is greater than targets amount then go to next page and 
+        reset onpage counter */
+        if (counter >= vacancies.length) {//2){
+            // Create new link with new page number
+            let current_url = new URL(window.location.href);
+            // Get current page number from local storage
+            let current_page_from_url = current_url.searchParams.get('page');
+            let current_page = 0;
+            if (current_page_from_url != null) {
+                current_page = parseInt(current_page_from_url);
+            }
+            
+            current_url.searchParams.set("page", current_page+1);
+            let new_url = current_url.href;
+
+            // Reset onpage counter
+            await forwardRequest({method: "counter", reset: true, type: 'page'});
+
+            // Log page changing with separation
+            await forwardRequest({method: "add_log", data: `Changing page to ${current_page+1}`, split: true});
+
+            // Go to new link
+            window.location.href = new_url;
+            return;
+        }
         var target = vacancies[counter];
 
         // Scroll to target

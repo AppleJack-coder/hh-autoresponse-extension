@@ -45,6 +45,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       var current_logs = response.logs;
       if (request.data == "" && request.split) {
         current_logs+='-----------------------------\n';
+      } else if (request.split) {
+        current_logs+='-----------------------------\n';
+        current_logs+=current_time+' '+request.data+'\n';
+        current_logs+='-----------------------------\n';
       } else {
         current_logs+=current_time+' '+request.data+'\n';
       }
@@ -59,16 +63,29 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse({success: true, logs: current_logs});
     })
   } else if (request.method == "counter") {
-    // TODO: add next page
     // Reset, get or add to counter
     if (request.reset == true) {
-      chrome.storage.local.set({counter: 0}).then(
-        sendResponse({success: true, counter: 0})
-      );
+      if (request.type == 'page') {
+        chrome.storage.local.set({page_counter: 0}).then(
+          sendResponse({success: true, counter: 0})
+        );
+      } else {
+        chrome.storage.local.set({counter: 0}).then(
+          chrome.storage.local.set({page_counter: 0}).then(
+            sendResponse({success: true, counter: 0})
+          )
+        );
+      }
     } else if (request.get == true) {
-      chrome.storage.local.get({counter: 0}).then((response) => {
-        sendResponse({success: true, counter: response.counter});
-      })
+      if (request.type == 'page') {
+        chrome.storage.local.get({page_counter: 0}).then((response) => {
+          sendResponse({success: true, counter: response.page_counter});
+        })  
+      } else {
+        chrome.storage.local.get({counter: 0}).then((response) => {
+          sendResponse({success: true, counter: response.counter});
+        })
+      }
       
     } else if (request.add == true) {
       chrome.storage.local.get({counter: 0}).then((response) => {
@@ -82,9 +99,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               )
             );
           } else {
-            chrome.storage.local.set({counter: current_counter}).then(
-              sendResponse({success: true, counter: current_counter})
-            )
+            chrome.storage.local.get({page_counter: 0}).then((response) => {
+              var current_page_counter = response.page_counter;
+              current_page_counter+=1;
+
+              chrome.storage.local.set({counter: current_counter}).then(
+                chrome.storage.local.set({page_counter: current_page_counter}).then(
+                  sendResponse({success: true, counter: current_counter})
+                )
+              )
+            })
           }
         })
       })
