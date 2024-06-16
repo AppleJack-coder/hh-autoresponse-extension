@@ -22,4 +22,4 @@ The hh (HeadHunter) website allows their users to apply for up to 200 vacancies 
 - [x] 6. Add functions to itterate through vacancies and hide them once they where checked
 - [x] 7. Send to every vacancy letter from settings
 - [x] 8. Avoid stucking on popups and additional confirmations
-- [ ] 9. Go to next page if needed and continue there
+- [ ] 9. Go to next page if needed and continue there- [ ] 10. Change browser settings to open tabs in new tab

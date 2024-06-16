@@ -26,7 +26,8 @@
           "search_content_script.js"
         ],
         "matches": [
-          "https://*.hh.ru/search/vacancy*"
+          "https://*.hh.ru/search/*",
+          "https://*.hh.ru/vacancies/*"
         ]
       },
       {

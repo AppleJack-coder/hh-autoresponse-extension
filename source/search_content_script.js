@@ -15,7 +15,9 @@ function timeout(ms) {
 console.log('Starting content_script.js');
 
 async function openInNewTab(url) {
+    console.log(`Openning ${url}`);
     window.open(url, '_blank').focus();
+    return;
 }
 
 async function hide(target) {
@@ -52,7 +54,6 @@ async function send_application() {
         // Get target vacancy
         var vacancies = document.getElementsByClassName('serp-item_link');
         var target = vacancies[counter];
-        console.log(target);
 
         // Scroll to target
         target.scrollIntoView({behavior: "smooth"});
@@ -80,8 +81,7 @@ async function mainLoop() {
         console.log(response.state);
         if (response.state == 1) {
             await send_application();
-        } else if (response.state == 0){
-        }
+        } else if (response.state == 0){}
     } else {
         await forwardRequest({method: "add_log", data: "Error while getting state"});
     }
