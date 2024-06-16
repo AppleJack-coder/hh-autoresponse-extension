@@ -11,8 +11,7 @@ function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
-setTimeout(async () => {
+async function applyLetter() {
     var response = await forwardRequest({method: "state", get: true});
     if (response.state == 2) {
         var relocation_warning = document.querySelectorAll("[data-qa='relocation-warning-confirm']");
@@ -44,7 +43,7 @@ setTimeout(async () => {
                 let confirmation = document.querySelectorAll("[data-qa='vacancy-response-letter-informer']")[0].textContent;
                             
                 // Log
-                if (confirmation.includes("отправлено")) {
+                if (confirmation.includes("отправлено") || confirmation.includes("has been sent")) {
                     await forwardRequest({method: "add_log", data: "Letter sent"});
                 } else {
                     await forwardRequest({method: "add_log", data: "Couldn't send a letter"});
@@ -60,14 +59,30 @@ setTimeout(async () => {
                 await forwardRequest({method: "add_log", data: "Letter sent"});
             }
         }
-
-        // Get current url and save to logs
-        let current_url = window.location.href;
-        await forwardRequest({method: "add_log", data: `Applied to ${current_url}`});
+        
         await forwardRequest({method: "add_log", data: "", split: true});
         
         // Set state to 1 and close tab
         await forwardRequest({method: "state", set: true, state: 1});
         window.close();
     }
+}
+
+setTimeout(async () => {
+    // Get current url and save to logs
+    let current_url = window.location.href;
+    await forwardRequest({method: "add_log", data: `${current_url}`});
+
+    try {
+        await applyLetter();
+    } catch (ex) {
+        // Log
+        await forwardRequest({method: "add_log", data: "Something went horribly wrong... Anyways, continue)"});
+        await forwardRequest({method: "add_log", data: "", split: true});
+
+        // Set state to 1 and close tab
+        await forwardRequest({method: "state", set: true, state: 1});
+        window.close();
+    }
+    
 }, 5000);
