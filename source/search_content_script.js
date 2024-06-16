@@ -55,7 +55,7 @@ async function send_application() {
         var vacancies = document.getElementsByClassName('serp-item_link');
         /* If counter is greater than targets amount then go to next page and 
         reset onpage counter */
-        if (counter >= vacancies.length) {//2){
+        if (counter >= vacancies.length) {
             // Create new link with new page number
             let current_url = new URL(window.location.href);
             // Get current page number from local storage
@@ -76,27 +76,29 @@ async function send_application() {
 
             // Go to new link
             window.location.href = new_url;
+            await timeout(10000);
             return;
+        } else {
+            var target = vacancies[counter];
+    
+            // Scroll to target
+            target.scrollIntoView({behavior: "smooth"});
+    
+            // Get block title and response url
+            var target_title = target.getElementsByClassName('serp-item__title-link')[0].textContent;
+            await forwardRequest({method: "add_log", data: `Located vacancy "${target_title}"`});
+            var target_response_url = target.getElementsByClassName('bloko-button_kind-primary')[0].href;
+    
+            // Go to response url
+            await forwardRequest({method: "state", set: true, state: 2});
+            await openInNewTab(target_response_url);
+    
+            console.log('Waiting to hide');
+            await hide_vacancy(target);
+            console.log('Hidden');
+            // Add 1 to counter
+            await forwardRequest({method: "counter", add: true});
         }
-        var target = vacancies[counter];
-
-        // Scroll to target
-        target.scrollIntoView({behavior: "smooth"});
-
-        // Get block title and response url
-        var target_title = target.getElementsByClassName('serp-item__title-link')[0].textContent;
-        await forwardRequest({method: "add_log", data: `Located vacancy "${target_title}"`});
-        var target_response_url = target.getElementsByClassName('bloko-button_kind-primary')[0].href;
-
-        // Go to response url
-        await forwardRequest({method: "state", set: true, state: 2});
-        await openInNewTab(target_response_url);
-
-        console.log('Waiting to hide');
-        await hide_vacancy(target);
-        console.log('Hidden');
-        // Add 1 to counter
-        await forwardRequest({method: "counter", add: true});
     }
 }
 

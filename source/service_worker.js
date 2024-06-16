@@ -46,7 +46,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if (request.data == "" && request.split) {
         current_logs+='-----------------------------\n';
       } else if (request.split) {
-        current_logs+='-----------------------------\n';
         current_logs+=current_time+' '+request.data+'\n';
         current_logs+='-----------------------------\n';
       } else {
