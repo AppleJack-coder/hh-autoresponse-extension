@@ -15,13 +15,23 @@ async function detectPageType() {
     var marker1 = document.getElementsByClassName('ResumeProfileFront-ReactRoot')[0];
     var marker2 = document.querySelectorAll("[data-qa='vacancy-response-letter-toggle']")[0];
     var marker3 = document.querySelectorAll("[data-qa='vacancy-response-submit-popup']")[0];
+    var marker4 = document.querySelectorAll("[data-qa='resume-education']")[0];
     if (marker1) {
         return 2;
     } else if (marker2) {
         return 0;
     } else if (marker3) {
         return 1;
+    } else if (marker4) {
+        return 4;
     }
+
+    await timeout(5000);
+    var marker5 = document.querySelectorAll("[data-qa='vacancy-response-link-top']")[0];
+    if (marker5) {
+        return 5;
+    }
+
     return 3;
 }
 
@@ -90,6 +100,7 @@ async function applyAndInsertLetter(page_type) {
                 return applyAndInsertLetter(3);
             }
             await waitBtnCase2(resumeElem);
+            await timeout(10000);
             await applyAndInsertLetter(0);
             break;
         
@@ -97,6 +108,20 @@ async function applyAndInsertLetter(page_type) {
             await forwardRequest({method: "add_log", data: "Couldn't apply to vacancy"});
             break;
 
+        case 4:
+            var applyBtn = document.querySelectorAll("[data-qa='resume-submit']")[0];
+            applyBtn.click();
+            await timeout(10000);
+            await applyAndInsertLetter(0);
+            break;
+
+        case 5:
+            var applyBtn = document.querySelectorAll("[data-qa='vacancy-response-link-top']")[0];
+            applyBtn.click();
+            await timeout(5000);
+            await applyAndInsertLetter(0);
+            break;
+            
         default:
             break;
     }
@@ -120,7 +145,9 @@ async function apply() {
         // 0 - standart page with add letter button
         // 1 - page just with letter field without a button
         // 2 - page with "Save and continue" button
-        // 3 - None above
+        // 3 - Unknown page type
+        // 4 - Education page
+        // 5 - Page without auto applying
         let pageType = await detectPageType();
         await forwardRequest({method: "add_log", data: `PageType ${pageType}`});
 
@@ -135,6 +162,7 @@ async function apply() {
 }
 
 setTimeout(async () => {
+    console.log('Test');
     // Get current url and save to logs
     let current_url = window.location.href;
     await forwardRequest({method: "add_log", data: `${current_url}`});

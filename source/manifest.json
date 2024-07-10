@@ -38,7 +38,8 @@
           "https://*.hh.ru/vacancy/*",
           "https://*.hh.ru/applicant/vacancy_response*",
           "https://*.hh.ru/applicant/negotiations",
-          "https://*.hh.ru/profile/resume/*"
+          "https://*.hh.ru/profile/resume/*",
+          "https://*.hh.ru/applicant/resumes*"
         ]
       }
     ],

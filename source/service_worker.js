@@ -70,12 +70,11 @@ function addLogEntry(data, split, current_time) {
   })
 }
 
-function checkLastLogAndRestart(senderTab, current_time) {
+function checkLastLogAndRestart(current_time) {
   /*Get last log timestamp and restart script if time 
     since last log is more than 30 sec and current 
     state isn't 0
 
-    Add +1 to counter
     Focus on tab with hh main page
     Set state to 1
     Log that script has restarted */
@@ -91,19 +90,20 @@ function checkLastLogAndRestart(senderTab, current_time) {
           console.log(current_timestamp-last_log_timestamp);
 
           if (current_state != 0 && (current_timestamp-last_log_timestamp) >= 30) {
-            addCounters().then(() => {
-              if (senderTab) {
-                // TODO: somehow detect if request came from tab or sidepanel
-                chrome.tabs.update(senderTab.id, {"active": true}, function(tab){ });
-              }
-              chrome.storage.local.set({state: 1}).then(() => {
-                addLogEntry("Script has restarted", true, current_time).then(() => {
-                    chrome.storage.local.set({last_log_timestamp: Math.floor(Date.now() / 1000)}).then(
-                      resolve()
-                    );
-                  } 
-                )
-              })
+            chrome.tabs.query({ url: ["https://*.hh.ru/search/*", "https://*.hh.ru/vacancies/*"] }).then((tabs) => {
+              var target_tab = tabs[0];
+              if (target_tab) {
+                chrome.tabs.update(target_tab.id, {"active": true}, function(tab){ });
+              } 
+            });
+  
+            chrome.storage.local.set({state: 1}).then(() => {
+              addLogEntry("Script has restarted", true, current_time).then(() => {
+                  chrome.storage.local.set({last_log_timestamp: Math.floor(Date.now() / 1000)}).then(
+                    resolve()
+                  );
+                } 
+              )
             })
           } else {
             return resolve();
@@ -195,7 +195,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           sendResponse({success: true, state: request.state})
         )
       } else if (request.get == true) {
-        checkLastLogAndRestart(sender.tab, current_time).then(
+        checkLastLogAndRestart(current_time).then(
           () => {
             chrome.storage.local.get({state: 0}).then((response) => {
               sendResponse({success: true, state: response.state});

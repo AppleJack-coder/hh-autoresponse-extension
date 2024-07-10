@@ -88,11 +88,13 @@ async function send_application() {
             var target_title = target.getElementsByClassName('serp-item__title-link')[0].textContent;
             await forwardRequest({method: "add_log", data: `Located vacancy "${target_title}"`});
             var target_response_url = target.getElementsByClassName('bloko-button_kind-primary')[0].href;
-    
-            // Go to response url
-            await forwardRequest({method: "state", set: true, state: 2});
-            await openInNewTab(target_response_url);
-    
+            
+            if (target_response_url) {
+                // Go to response url
+                await forwardRequest({method: "state", set: true, state: 2});
+                await openInNewTab(target_response_url);
+            }
+            
             console.log('Waiting to hide');
             await hide_vacancy(target);
             console.log('Hidden');
