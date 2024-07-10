@@ -22,6 +22,7 @@ async function openInNewTab(url) {
 
 async function hide(target) {
     let response = await forwardRequest({method: "state", get: true});
+    console.log(response);
     if (response.state == 1) {
         // Click on "hide" and "hide this vacancy"
         target.querySelectorAll("[data-qa='vacancy__blacklist-show-add']")[2].focus();
@@ -38,7 +39,6 @@ async function hide(target) {
 
 function hide_vacancy(target) {
     return new Promise(async (resolve) => {
-        console.log('Promise');
         await hide(target);
         return resolve();
     });
@@ -104,6 +104,7 @@ async function send_application() {
 
 async function mainLoop() {
     var response = await forwardRequest({method: "state", get: true});
+    console.log(response);
     if (response.success == true) {
         console.log(response.state);
         if (response.state == 1) {
