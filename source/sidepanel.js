@@ -52,9 +52,10 @@ function getLogs() {
     var logs_textarea = document.getElementById('logs');
     forwardRequest({method: 'get_logs'}).then((response) => {
         if (response.success) {
-            console.log(response.logs)
-            logs_textarea.textContent=response.logs;
-            logs_textarea.scrollTop = logs_textarea.scrollHeight;
+            if (logs_textarea.textContent != response.logs) {
+                logs_textarea.textContent=response.logs;
+                logs_textarea.scrollTop = logs_textarea.scrollHeight;
+            }
         }
     })
 }

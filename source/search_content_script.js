@@ -104,13 +104,32 @@ async function send_application() {
     }
 }
 
+async function checkIfPageExists() {
+    // Check if page exists
+    var error404 = document.querySelectorAll('[data-qa="bloko-header-1"]')[0];
+    if (error404) {
+        return false;
+    }
+    // Check if there are vacancies on current page
+    var vacancies = document.getElementsByClassName('serp-item_link');
+    if (vacancies.length == 0) {
+        return false;
+    }
+    return true;
+}
+
 async function mainLoop() {
     var response = await forwardRequest({method: "state", get: true});
     console.log(response);
     if (response.success == true) {
         console.log(response.state);
         if (response.state == 1) {
-            await send_application();
+            if (await checkIfPageExists()) {
+                await send_application();
+            } else {
+                await forwardRequest({method: "add_log", data: "Page doesn't exist. Stopping script"});
+                await forwardRequest({method: "state", set: true, state: 0});
+            }
         } else if (response.state == 0){}
     } else {
         await forwardRequest({method: "add_log", data: "Error while getting state"});
