@@ -161,6 +161,16 @@ async function apply() {
     }
 }
 
+async function check200perDayLimit() {
+    var notification = document.getElementsByClassName('bloko-notification__wrapper')[0];
+    if (notification) {
+        if (notification.textContent.includes('200') && notification.textContent.includes('24')) {
+            return false;
+        }
+    }
+    return true;
+}
+
 setTimeout(async () => {
     console.log('Test');
     // Get current url and save to logs
@@ -168,7 +178,12 @@ setTimeout(async () => {
     await forwardRequest({method: "add_log", data: `${current_url}`});
 
     try {
-        await apply();
+        if (await check200perDayLimit()) {
+            await apply();
+        } else {
+            await forwardRequest({method: "add_log", data: "Reached 200 per 24 hours limit. Stopping script"});
+            await forwardRequest({method: "state", set: true, state: 0});
+        }
     } catch (ex) {
         // Log
         await forwardRequest({method: "add_log", data: "Something went horribly wrong... Anyways, continue)"});
